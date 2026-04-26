@@ -3,8 +3,8 @@ _.file = ".env"
 
 [tasks.start]
 description = "Run the bot"
-run = "go run ./cmd/dcc"
+run = "go run ./cmd/dcc -prefix=test_"
 
 [tasks.watch]
 description = "Use watchexec to auto-rerun bot on code changes"
-run = "watchexec -e .go go run ./cmd/dcc"
+run = "watchexec -e .go go run ./cmd/dcc -prefix=test_"

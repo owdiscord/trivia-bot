@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"log/slog"
 	"os"
@@ -15,6 +16,13 @@ import (
 	"github.com/owdiscord/dcc/internal/commands"
 	"github.com/owdiscord/dcc/internal/db"
 )
+
+var dbPrefix string
+
+func init() {
+	flag.StringVar(&dbPrefix, "prefix", "", "file name prefix for database files")
+	flag.Parse()
+}
 
 func main() {
 	token := os.Getenv("BOT_TOKEN")
@@ -49,19 +57,19 @@ func main() {
 		return
 	}
 
-	trivia, err := db.ReadTrivia("test.csv")
+	trivia, err := db.ReadTrivia("./db/" + dbPrefix + "trivia.csv")
 	if err != nil {
 		slog.Error("could not read trivia config", "trivia_err", err)
 		return
 	}
 
-	store, err := db.NewPointStore("test_points.json")
+	store, err := db.NewPointStore("./db/" + dbPrefix + "points.json")
 	if err != nil {
 		slog.Error("could not init store", "err", err)
 		return
 	}
 
-	stats, err := db.NewStatStore("test_stats.json")
+	stats, err := db.NewStatStore("./db/" + dbPrefix + "stats.json")
 	if err != nil {
 		slog.Error("could not init stats store", "err", err)
 		return
