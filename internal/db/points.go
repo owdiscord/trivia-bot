@@ -1,10 +1,12 @@
 package db
 
 import (
+	"cmp"
 	"encoding/json"
 	"log/slog"
 	"maps"
 	"os"
+	"slices"
 	"sync"
 	"time"
 )
@@ -50,6 +52,30 @@ func NewPointStore(path string) (*PointStore, error) {
 func (s *PointStore) Close() {
 	close(s.stopCh)
 	<-s.doneCh
+}
+
+type PointEntry struct {
+	UserID string
+	Points int
+}
+
+func (s *PointStore) TopN(count int) []PointEntry {
+	s.mu.RLock()
+	defer s.mu.RUnlock()
+
+	entries := make([]PointEntry, 0, len(s.data))
+	for userID, points := range s.data {
+		entries = append(entries, PointEntry{UserID: userID, Points: points})
+	}
+
+	slices.SortFunc(entries, func(a, b PointEntry) int {
+		return cmp.Compare(b.Points, a.Points) // descending
+	})
+
+	if count > len(entries) {
+		count = len(entries)
+	}
+	return entries[:count]
 }
 
 // Get returns current points for a user
