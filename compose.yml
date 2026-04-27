@@ -1,0 +1,7 @@
+services:
+  dcc_bot:
+    build: .
+    env_file: .env
+    volumes:
+      - "./db:/db"
+    command: ["-prefix=test_"]
