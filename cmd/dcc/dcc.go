@@ -75,7 +75,7 @@ func main() {
 		return
 	}
 
-	b := bot.New(dg, guildID, addRoleID, store, stats, time.Minute*10, time.Second*20, channels, trivia)
+	b := bot.New(dg, guildID, addRoleID, store, stats, time.Minute*10, time.Second*15, channels, trivia)
 
 	dg.AddHandler(b.HandleInteraction)
 

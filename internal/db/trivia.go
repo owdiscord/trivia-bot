@@ -30,9 +30,12 @@ func ReadTrivia(path string) ([]*Trivia, error) {
 
 	trivia := make([]*Trivia, len(records)-1)
 	for i, question := range records[1:] {
-		answers := make(map[string]bool, len(question[1:]))
+		answers := map[string]bool{}
+
 		for i, answer := range question[1:] {
-			answers[answer] = i == 0
+			if answer != "" {
+				answers[answer] = i == 0
+			}
 		}
 
 		trivia[i] = &Trivia{
