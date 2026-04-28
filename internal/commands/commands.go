@@ -10,24 +10,26 @@ import (
 	"github.com/owdiscord/dcc/internal/db"
 )
 
-const staffRoleID = "968480104483291196"
+var (
+	staffRoleID = "968480104483291196"
 
-func ptr[T any](v T) *T { return &v }
+	defaultMemberPermissions int64 = discordgo.PermissionSendMessages
 
-var Commands = []*discordgo.ApplicationCommand{
-	{
-		Name:                     "trivia",
-		Description:              "Parent command for all trivia-related commands",
-		DefaultMemberPermissions: ptr(int64(0)), // hidden from everyone by default
-		Options: []*discordgo.ApplicationCommandOption{
-			{
-				Type:        discordgo.ApplicationCommandOptionSubCommand,
-				Name:        "leaderboard",
-				Description: "View the top trivia players",
+	Commands = []*discordgo.ApplicationCommand{
+		{
+			Name:                     "trivia",
+			Description:              "Parent command for all trivia-related commands",
+			DefaultMemberPermissions: &defaultMemberPermissions,
+			Options: []*discordgo.ApplicationCommandOption{
+				{
+					Type:        discordgo.ApplicationCommandOptionSubCommand,
+					Name:        "leaderboard",
+					Description: "View the top trivia players",
+				},
 			},
 		},
-	},
-}
+	}
+)
 
 // HasStaffRole checks whether the interaction member has the staff role.
 func HasStaffRole(i *discordgo.InteractionCreate) bool {
@@ -48,7 +50,7 @@ func HandleTrivia(s *discordgo.Session, i *discordgo.InteractionCreate, store *d
 		_ = s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
 			Type: discordgo.InteractionResponseChannelMessageWithSource,
 			Data: &discordgo.InteractionResponseData{
-				Content: "You don't have permission to use this command.",
+				Content: "You don't have permission to use this command, sorry!",
 				Flags:   discordgo.MessageFlagsEphemeral,
 			},
 		})
